@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+    <script>
+        /*
+            csv / excel 파일을 만드는 스크립트.
+        */
+        function makeCsv(){
+            var json = {
+                "test1":"테스트1"
+                ,"test2":"테스트2"
+                ,"test3":"테스트3"
+                ,"test4":"테스트4"
+            }
+            var arr=[];
+            for(var i=0;i<10;i++){
+                arr.push(json);
+            }
+            
+            //arr을 csv or excel 파일로 다운로드하는 스크립트
+
+            let fileName = "csv다운로드.csv";   //excel의 경우엔 .xls
+            var BOM = "\uFEFF";
+            var csvString = BOM;
+
+            for(var rowCnt = 0;rowCnt<arr.length;rowCnt++){
+                var rowData = arr[rowCnt];
+                debugger;
+                var keys = Object.keys(rowData);
+            
+                for(var colCnt =0;colCnt<keys.length;colCnt++){
+                    var colData = rowData[keys[colCnt]]+"";
+                    csvString = csvString+colData+",";
+                }
+                csvString = csvString.substring(0,csvString.length-1);
+                csvString = csvString+"\r\n";
+            }
+            csvString = csvString.substring(0,csvString.length-1);
+
+
+            
+            if(window.navigator && window.navigator.msSaveOrOpenBlob){
+                var blob = new Blob([decodeURIComponent(csvString)], {type : "application/csv;charset=UTF-8"});    
+                window.navigator.msSaveOrOpenBlob(blob,fileName);0
+            }else if(window.Blob && window.URL){
+                var blob = new Blob([csvString],{type:"application/csv;charset=UTF-8"});
+                var csvURL = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.setAttribute("style","display:none");
+                a.setAttribute("href",csvURL);
+                a.setAttribute("download",fileName);
+
+                document.body.appendChild(a);
+
+                a.click();
+                a.remove();
+            }else{
+                var csvData = 'data:application/csv;charset=UTF-8,'+encodeURIComponent(csvStinrg);
+                var blob = new Blob([csvString],{type:"text/csv;charset=UTF-8"});
+                var csvURL = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+
+                a.setAttribute("style","display:none");
+                a.setAttribute("href",csvData);
+                a.setAttribute("target","_blank");
+                a.setAttribute("download",fileName);
+
+                document.body.appendChild(a);
+
+                a.click();
+                a.remove();
+            }
+
+
+
+
+        }
+
+    </script>
+</head>
+<body>
+
+    <button onclick="makeCsv();">엑셀 다운로드</button>
+    
+</body>
+</html>
